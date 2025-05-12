@@ -1,6 +1,13 @@
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+
 namespace Messenger.API.Controllers;
 
-public class TestController
+[ApiController]
+[Route("api/[controller]")]
+[Authorize]
+public class TestController : ControllerBase
 {
-    
+    [HttpGet]
+    public IActionResult GetSomething() => Ok("Hello World!");
 }
