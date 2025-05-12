@@ -1,0 +1,16 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Messenger.API", "Messenger.API\Messenger.API.csproj", "{9FCD38F6-844A-45F5-9BED-554C4F66C0C6}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{9FCD38F6-844A-45F5-9BED-554C4F66C0C6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9FCD38F6-844A-45F5-9BED-554C4F66C0C6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9FCD38F6-844A-45F5-9BED-554C4F66C0C6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9FCD38F6-844A-45F5-9BED-554C4F66C0C6}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
