@@ -54,6 +54,7 @@ builder.Services.AddSingleton<IConnectedClientManager, ConnectedClientManager>()
 
 builder.Services.AddSingleton<IRedisStreamService, RedisStreamService>();
 builder.Services.AddSingleton<IRedisStreamListener, DirectMessageStreamListener>();
+builder.Services.AddSingleton<IMessageService, MessageService>();
 
 builder.Services.AddHostedService<RedisStreamManager>();
 
