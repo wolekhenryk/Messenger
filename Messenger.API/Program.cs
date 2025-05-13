@@ -2,12 +2,16 @@ using System.Text;
 using Messenger.API.Data;
 using Messenger.API.Models;
 using Messenger.API.Services;
+using Messenger.API.Services.Redis;
+using Messenger.API.Services.SignalR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Serilog;
+using StackExchange.Redis;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -42,9 +46,27 @@ builder.Services.AddCors(options =>
 
 builder.Services.AddScoped<ITokenService, TokenService>();
 
+builder.Services.AddSingleton<IConnectionMultiplexer>(
+    ConnectionMultiplexer.Connect(builder.Configuration["Redis:ConnectionString"]!));
+
+builder.Services.AddSingleton<IUserIdProvider, CustomUserIdProvider>();
+builder.Services.AddSingleton<IConnectedClientManager, ConnectedClientManager>();
+
+builder.Services.AddSingleton<IRedisStreamService, RedisStreamService>();
+builder.Services.AddSingleton<IRedisStreamListener, DirectMessageStreamListener>();
+
+builder.Services.AddHostedService<RedisStreamManager>();
+
 builder.Services.AddDbContext<AppDbContext>(options => options
         .UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"))
         .UseSnakeCaseNamingConvention());
+
+builder.Services.AddSignalR(options =>
+{
+    options.EnableDetailedErrors = true;
+    options.KeepAliveInterval = TimeSpan.FromSeconds(15);
+    options.HandshakeTimeout = TimeSpan.FromSeconds(15);
+});
 
 // JWT Authentication
 builder.Services.AddIdentity<User, IdentityRole>()
@@ -69,6 +91,22 @@ builder.Services.AddAuthentication(options =>
     .AddJwtBearer(options =>
     {
         var key = Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]!);
+
+        options.Events = new JwtBearerEvents
+        {
+            OnMessageReceived = context =>
+            {
+                var accessToken = context.Request.Query["access_token"];
+                var path = context.HttpContext.Request.Path;
+                if (!string.IsNullOrEmpty(accessToken) && path.StartsWithSegments("/app"))
+                {
+                    context.Token = accessToken;
+                }
+                
+                return Task.CompletedTask;
+            }
+        };
+        
         options.TokenValidationParameters = new TokenValidationParameters
         {
             ValidateIssuer = true,
@@ -105,7 +143,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-// app.MapOpenApi();
+app.MapHub<MessageHub>("/app/messages");
+
 app.Run();
 
 return;
