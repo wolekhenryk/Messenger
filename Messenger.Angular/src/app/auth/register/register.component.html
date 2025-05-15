@@ -1,170 +1,211 @@
 <div class="d-flex align-items-center justify-content-center min-vh-100">
-  <div class="card shadow-sm p-4" style="width: 100%; max-width: 400px">
-    <h4 class="text-center mb-4">Register</h4>
-    <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
-      <!-- First Name -->
-      <div class="mb-3">
-        <label for="email" class="form-label">First Name</label>
-        <input
-          type="text"
-          id="firstName"
-          formControlName="firstName"
-          class="form-control"
-          [ngClass]="{
-            'is-invalid':
-              registerForm.get('firstName')?.invalid &&
-              registerForm.get('firstName')?.touched
-          }"
-        />
-        <div
-          class="invalid-feedback"
-          *ngIf="registerForm.get('firstName')?.errors?.['required']"
-        >
-          First name is required.
-        </div>
-        <div
-          class="invalid-feedback"
-          *ngIf="registerForm.get('firstName')?.errors?.['firstName']"
-        >
-          Invalid first name format.
-        </div>
-      </div>
+  <div>
+    <app-notification />
+    <div class="card shadow-sm p-4" style="width: 100%; max-width: 650px">
+      <h4 class="text-center mb-4">Register</h4>
+      <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+        <!-- First Name -->
+        <div class="row d-flex mb-3">
+          <div class="col-6">
+            <label for="email" class="form-label">First Name</label>
 
-      <!-- Last Name -->
-      <div class="mb-3">
-        <label for="email" class="form-label">Last Name</label>
-        <input
-          type="text"
-          id="lastName"
-          formControlName="lastName"
-          class="form-control"
-          [ngClass]="{
-            'is-invalid':
-              registerForm.get('lastName')?.invalid &&
-              registerForm.get('lastName')?.touched
-          }"
-        />
-        <div
-          class="invalid-feedback"
-          *ngIf="registerForm.get('lastName')?.errors?.['required']"
-        >
-          last name is required.
-        </div>
-        <div
-          class="invalid-feedback"
-          *ngIf="registerForm.get('lastName')?.errors?.['lastName']"
-        >
-          Invalid last name format.
-        </div>
-      </div>
+            <div class="input-group">
+              <span class="input-group-text" id="basic-addon1">
+                <i class="fa-solid fa-user"></i>
+              </span>
 
-      <!-- Email -->
-      <div class="mb-3">
-        <label for="email" class="form-label">Email address</label>
-        <input
-          type="email"
-          id="email"
-          formControlName="email"
-          class="form-control"
-          [ngClass]="{
-            'is-invalid':
-              registerForm.get('email')?.invalid &&
-              registerForm.get('email')?.touched
-          }"
-        />
-        <div
-          class="invalid-feedback"
-          *ngIf="registerForm.get('email')?.errors?.['required']"
-        >
-          Email is required.
-        </div>
-        <div
-          class="invalid-feedback"
-          *ngIf="registerForm.get('email')?.errors?.['email']"
-        >
-          Invalid email format.
-        </div>
-      </div>
+              <input
+                type="text"
+                id="firstName"
+                formControlName="firstName"
+                class="form-control"
+                [ngClass]="{
+                  'is-invalid':
+                    registerForm.get('firstName')?.invalid &&
+                    registerForm.get('firstName')?.touched
+                }"
+              />
+              <div
+                class="invalid-feedback"
+                *ngIf="registerForm.get('firstName')?.errors?.['required']"
+              >
+                First name is required.
+              </div>
+              <div
+                class="invalid-feedback"
+                *ngIf="registerForm.get('firstName')?.errors?.['firstName']"
+              >
+                Invalid first name format.
+              </div>
+            </div>
+          </div>
 
-      <!-- Password -->
-      <div class="mb-3">
-        <label for="password" class="form-label">Password</label>
-        <input
-          type="password"
-          id="password"
-          formControlName="password"
-          class="form-control"
-          [ngClass]="{
-            'is-invalid':
-              (registerForm.get('password')?.invalid && registerForm.get('password')?.touched) ||
-              (registerForm.errors?.['passwordsMismatch'] && registerForm.get('password')?.touched)
-          }"
-        />
-        <div
-          class="invalid-feedback"
-          *ngIf="registerForm.get('password')?.errors?.['required']"
-        >
-          Password is required.
+          <div class="col-6">
+            <label for="email" class="form-label">Last Name</label>
+            <div class="input-group">
+              <span class="input-group-text" id="basic-addon1">
+                <i class="fa-solid fa-user"></i>
+              </span>
+              <input
+                type="text"
+                id="lastName"
+                formControlName="lastName"
+                class="form-control"
+                [ngClass]="{
+                  'is-invalid':
+                    registerForm.get('lastName')?.invalid &&
+                    registerForm.get('lastName')?.touched
+                }"
+              />
+              <div
+                class="invalid-feedback"
+                *ngIf="registerForm.get('lastName')?.errors?.['required']"
+              >
+                last name is required.
+              </div>
+              <div
+                class="invalid-feedback"
+                *ngIf="registerForm.get('lastName')?.errors?.['lastName']"
+              >
+                Invalid last name format.
+              </div>
+            </div>
+          </div>
         </div>
-        <div
-          class="invalid-feedback"
-          *ngIf="registerForm.get('password')?.errors?.['minlength']"
-        >
-          Password must be at least 8 characters.
-        </div>
-        <div
-          class="invalid-feedback"
-          *ngIf="registerForm.get('password')?.errors?.['strongPassword'] && registerForm.get('password')?.touched"
-        >
-          Password must include an uppercase letter, a digit, and a special
-          character.
-        </div>
-        <div
-          class="invalid-feedback"
-          *ngIf="registerForm.errors?.['passwordsMismatch'] && registerForm.get('password')?.touched"
-        >
-          Passwords do not match.
-        </div>
-      </div>
 
-      <!-- Confirm Password -->
-      <div class="mb-4">
-        <label for="confirmPassword" class="form-label">Confirm Password</label>
-        <input
-          type="password"
-          id="confirmPassword"
-          formControlName="confirmPassword"
-          class="form-control"
-          [ngClass]="{
+        <!-- Email -->
+        <div class="mb-3">
+          <label for="email" class="form-label">Email address</label>
+          <div class="input-group">
+            <span class="input-group-text" id="basic-addon1">
+              <i class="fa-solid fa-at"></i>
+            </span>
+            <input
+              type="email"
+              id="email"
+              formControlName="email"
+              class="form-control"
+              [ngClass]="{
+                'is-invalid':
+                  registerForm.get('email')?.invalid &&
+                  registerForm.get('email')?.touched
+              }"
+            />
+            <div
+              class="invalid-feedback"
+              *ngIf="registerForm.get('email')?.errors?.['required']"
+            >
+              Email is required.
+            </div>
+            <div
+              class="invalid-feedback"
+              *ngIf="registerForm.get('email')?.errors?.['email']"
+            >
+              Invalid email format.
+            </div>
+          </div>
+        </div>
+
+        <!-- Password -->
+        <div class="row d-flex mb-4">
+          <div class="col-6">
+            <label for="password" class="form-label">Password</label>
+            <div class="input-group">
+              <span class="input-group-text" id="basic-addon1">
+                <i class="fa-solid fa-lock"></i>
+              </span>
+              <input
+                type="password"
+                id="password"
+                formControlName="password"
+                class="form-control"
+                [ngClass]="{
+            'is-invalid':
+            (registerForm.get('password')?.invalid && registerForm.get('password')?.touched) ||
+            (registerForm.errors?.['passwordsMismatch'] && registerForm.get('password')?.touched)
+            }"
+              />
+              <div
+                class="invalid-feedback"
+                *ngIf="registerForm.get('password')?.errors?.['required']"
+              >
+                Password is required.
+              </div>
+              <div
+                class="invalid-feedback"
+                *ngIf="registerForm.get('password')?.errors?.['minlength']"
+              >
+                Password must be at least 8 characters.
+              </div>
+              <div
+                class="invalid-feedback"
+                *ngIf="registerForm.get('password')?.errors?.['strongPassword'] && registerForm.get('password')?.touched"
+              >
+                Password must include an uppercase letter, a digit, and a
+                special character.
+              </div>
+              <div
+                class="invalid-feedback"
+                *ngIf="registerForm.errors?.['passwordsMismatch'] && registerForm.get('password')?.touched"
+              >
+                Passwords do not match.
+              </div>
+            </div>
+          </div>
+
+          <!-- Confirm Password -->
+          <div class="col-6">
+            <label for="confirmPassword" class="form-label"
+              >Confirm Password</label
+            >
+            <div class="input-group">
+              <span class="input-group-text" id="basic-addon1">
+                <i class="fa-solid fa-lock"></i>
+              </span>
+              <input
+                type="password"
+                id="confirmPassword"
+                formControlName="confirmPassword"
+                class="form-control"
+                [ngClass]="{
             'is-invalid':
               (confirmPasswordControl?.invalid && confirmPasswordControl?.touched) ||
               (registerForm.errors?.['passwordsMismatch'] && confirmPasswordControl?.touched)
           }"
-        />
-        <div
-          class="invalid-feedback"
-          *ngIf="registerForm.get('confirmPassword')?.errors?.['required']"
-        >
-          Please confirm your password.
+              />
+              <div
+                class="invalid-feedback"
+                *ngIf="registerForm.get('confirmPassword')?.errors?.['required']"
+              >
+                Please confirm your password.
+              </div>
+              <div
+                class="invalid-feedback"
+                *ngIf="registerForm.errors?.['passwordsMismatch'] && confirmPasswordControl?.touched"
+              >
+                Passwords do not match.
+              </div>
+            </div>
+          </div>
         </div>
-        <div
-          class="invalid-feedback"
-          *ngIf="registerForm.errors?.['passwordsMismatch'] && confirmPasswordControl?.touched"
-        >
-          Passwords do not match.
-        </div>
-      </div>
 
-      <!-- Submit -->
-      <div class="d-grid">
-        <button
-          type="submit"
-          class="btn btn-primary"
-          [disabled]="registerForm.invalid"
-        >
-          Register
-        </button>
+        <!-- Submit -->
+        <div class="d-grid">
+          <button
+            type="submit"
+            class="btn btn-primary"
+            [disabled]="registerForm.invalid"
+          >
+            Register
+          </button>
+        </div>
+      </form>
+      <div class="text-center mt-3">
+        <p class="mb-0">
+          Already have an account?
+          <a routerLink="/login" class="text-primary">Login</a>
+        </p>
       </div>
-    </form>
+    </div>
   </div>
 </div>

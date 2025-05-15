@@ -1,23 +1,22 @@
 import { Injectable } from '@angular/core';
-import { TokenService } from './token.service';
 import { Router } from '@angular/router';
-import { UserRegister } from '../../auth/register/regisyer.types';
-import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { UserLogin, UserRegister } from '../../auth/register/register.types';
+import { Observable, tap } from 'rxjs';
+import { ApiService } from '../api.service';
+import { LoginResponse } from './auth.types';
+import { TokenService } from './token.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
   constructor(
-    private tokenService: TokenService,
     private router: Router,
-    private httpClient: HttpClient
+    private api: ApiService,
+    private tokenService: TokenService
   ) {
     this.checkAuth();
   }
-
-  private apiUrl: string = 'http://localhost:4300/api';
 
   checkAuth(): void {
     const currentUrl = this.router.url;
@@ -33,7 +32,25 @@ export class AuthService {
     // }
   }
 
+  isAuthenticated(): boolean {
+    return this.tokenService.hasTokens();
+  }
+
+  logout(): void {
+    this.tokenService.clearTokens();
+    this.router.navigate(['/login']);
+  }
+
   registerUser(userRegister: UserRegister): Observable<any> {
-    return this.httpClient.post(`${this.apiUrl}/auth/register`, userRegister);
+    return this.api.genericPost('auth/register', userRegister);
+  }
+
+  loginUser(userLogin: UserLogin): Observable<any> {
+    return this.api.genericPost('auth/login', userLogin).pipe(
+      tap((response: any) => {
+        this.tokenService.setAccessToken(response.token);
+        this.tokenService.setRefreshToken(response.refreshToken);
+      })
+    );
   }
 }
