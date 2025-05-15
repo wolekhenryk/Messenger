@@ -2,6 +2,62 @@
   <div class="card shadow-sm p-4" style="width: 100%; max-width: 400px">
     <h4 class="text-center mb-4">Register</h4>
     <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+      <!-- First Name -->
+      <div class="mb-3">
+        <label for="email" class="form-label">First Name</label>
+        <input
+          type="text"
+          id="firstName"
+          formControlName="firstName"
+          class="form-control"
+          [ngClass]="{
+            'is-invalid':
+              registerForm.get('firstName')?.invalid &&
+              registerForm.get('firstName')?.touched
+          }"
+        />
+        <div
+          class="invalid-feedback"
+          *ngIf="registerForm.get('firstName')?.errors?.['required']"
+        >
+          First name is required.
+        </div>
+        <div
+          class="invalid-feedback"
+          *ngIf="registerForm.get('firstName')?.errors?.['firstName']"
+        >
+          Invalid first name format.
+        </div>
+      </div>
+
+      <!-- Last Name -->
+      <div class="mb-3">
+        <label for="email" class="form-label">Last Name</label>
+        <input
+          type="text"
+          id="lastName"
+          formControlName="lastName"
+          class="form-control"
+          [ngClass]="{
+            'is-invalid':
+              registerForm.get('lastName')?.invalid &&
+              registerForm.get('lastName')?.touched
+          }"
+        />
+        <div
+          class="invalid-feedback"
+          *ngIf="registerForm.get('lastName')?.errors?.['required']"
+        >
+          last name is required.
+        </div>
+        <div
+          class="invalid-feedback"
+          *ngIf="registerForm.get('lastName')?.errors?.['lastName']"
+        >
+          Invalid last name format.
+        </div>
+      </div>
+
       <!-- Email -->
       <div class="mb-3">
         <label for="email" class="form-label">Email address</label>
@@ -40,8 +96,8 @@
           class="form-control"
           [ngClass]="{
             'is-invalid':
-              registerForm.get('password')?.invalid &&
-              registerForm.get('password')?.touched
+              (registerForm.get('password')?.invalid && registerForm.get('password')?.touched) ||
+              (registerForm.errors?.['passwordsMismatch'] && registerForm.get('password')?.touched)
           }"
         />
         <div
@@ -56,6 +112,19 @@
         >
           Password must be at least 8 characters.
         </div>
+        <div
+          class="invalid-feedback"
+          *ngIf="registerForm.get('password')?.errors?.['strongPassword'] && registerForm.get('password')?.touched"
+        >
+          Password must include an uppercase letter, a digit, and a special
+          character.
+        </div>
+        <div
+          class="invalid-feedback"
+          *ngIf="registerForm.errors?.['passwordsMismatch'] && registerForm.get('password')?.touched"
+        >
+          Passwords do not match.
+        </div>
       </div>
 
       <!-- Confirm Password -->
@@ -68,8 +137,8 @@
           class="form-control"
           [ngClass]="{
             'is-invalid':
-              registerForm.get('confirmPassword')?.invalid &&
-              registerForm.get('confirmPassword')?.touched
+              (confirmPasswordControl?.invalid && confirmPasswordControl?.touched) ||
+              (registerForm.errors?.['passwordsMismatch'] && confirmPasswordControl?.touched)
           }"
         />
         <div
@@ -77,6 +146,12 @@
           *ngIf="registerForm.get('confirmPassword')?.errors?.['required']"
         >
           Please confirm your password.
+        </div>
+        <div
+          class="invalid-feedback"
+          *ngIf="registerForm.errors?.['passwordsMismatch'] && confirmPasswordControl?.touched"
+        >
+          Passwords do not match.
         </div>
       </div>
 

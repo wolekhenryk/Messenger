@@ -21,6 +21,8 @@ public class AuthController(
     {
         var user = new User
         {
+            FirstName = registerDto.FirstName,
+            LastName = registerDto.LastName,
             UserName = registerDto.Email,
             Email = registerDto.Email,
         };

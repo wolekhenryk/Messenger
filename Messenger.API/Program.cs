@@ -1,6 +1,7 @@
 using System.Text;
 using Messenger.API.Data;
 using Messenger.API.Models;
+using Messenger.API.Repositories;
 using Messenger.API.Services;
 using Messenger.API.Services.Redis;
 using Messenger.API.Services.SignalR;
@@ -44,6 +45,13 @@ builder.Services.AddCors(options =>
     });
 });
 
+builder.Services.AddDbContext<AppDbContext>(options => options
+    .UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"))
+    .UseSnakeCaseNamingConvention());
+
+builder.Services.AddScoped<IMessageRepository, MessageRepository>();
+builder.Services.AddScoped<IMessageService, MessageService>();
+builder.Services.AddScoped<IRedisStreamListener, DirectMessageStreamListener>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 
 builder.Services.AddSingleton<IConnectionMultiplexer>(
@@ -51,16 +59,10 @@ builder.Services.AddSingleton<IConnectionMultiplexer>(
 
 builder.Services.AddSingleton<IUserIdProvider, CustomUserIdProvider>();
 builder.Services.AddSingleton<IConnectedClientManager, ConnectedClientManager>();
-
 builder.Services.AddSingleton<IRedisStreamService, RedisStreamService>();
-builder.Services.AddSingleton<IRedisStreamListener, DirectMessageStreamListener>();
-builder.Services.AddSingleton<IMessageService, MessageService>();
 
-builder.Services.AddHostedService<RedisStreamManager>();
+builder.Services.AddSingleton<IHostedService, RedisStreamManager>();
 
-builder.Services.AddDbContext<AppDbContext>(options => options
-        .UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"))
-        .UseSnakeCaseNamingConvention());
 
 builder.Services.AddSignalR(options =>
 {
