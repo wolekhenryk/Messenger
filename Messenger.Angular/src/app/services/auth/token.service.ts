@@ -1,19 +1,30 @@
 import { Injectable } from '@angular/core';
+import { BehaviorSubject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
 })
 export class TokenService {
-  private accessToken: string | null = null;
+  private accessTokenSubject = new BehaviorSubject<string | null>(null);
+  public readonly accessToken$ = this.accessTokenSubject.asObservable();
+
   private refreshToken: string | null = null;
 
+  constructor() {
+    const token = localStorage.getItem('accessToken');
+    if (token) {
+      this.accessTokenSubject.next(token);
+    }
+    this.refreshToken = localStorage.getItem('refreshToken');
+  }
+
   setAccessToken(token: string) {
-    this.accessToken = token;
     localStorage.setItem('accessToken', token);
+    this.accessTokenSubject.next(token);
   }
 
   getAccessToken(): string | null {
-    return this.accessToken;
+    return this.accessTokenSubject.value;
   }
 
   setRefreshToken(token: string) {
@@ -26,23 +37,13 @@ export class TokenService {
   }
 
   clearTokens() {
-    this.accessToken = null;
-    this.refreshToken = null;
-
     localStorage.removeItem('accessToken');
     localStorage.removeItem('refreshToken');
+    this.accessTokenSubject.next(null);
+    this.refreshToken = null;
   }
 
   hasTokens(): boolean {
-    return this.accessToken !== null && this.refreshToken !== null;
-  }
-
-  constructor() {
-    if (localStorage.getItem('accessToken')) {
-      this.accessToken = localStorage.getItem('accessToken');
-    }
-    if (localStorage.getItem('refreshToken')) {
-      this.refreshToken = localStorage.getItem('refreshToken');
-    }
+    return !!this.accessTokenSubject.value && !!this.refreshToken;
   }
 }

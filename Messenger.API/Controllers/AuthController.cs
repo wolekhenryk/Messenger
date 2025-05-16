@@ -2,7 +2,9 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using Messenger.API.Models;
+using Messenger.API.Models.Jwt;
 using Messenger.API.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
@@ -50,9 +52,60 @@ public class AuthController(
             RefreshToken = refreshToken,
         });
     }
+
+    // [HttpGet("me")]
+    // [Authorize]
+    // public async Task<IActionResult> GetMe()
+    // {
+    //     var user = await userManager.GetUserAsync(User);
+    //     return Ok(user);
+    // }
+    
+    [Authorize]
+    [HttpPost("validate")]
+    public IActionResult Validate([FromBody] ValidateTokenDto tokenDto)
+    {
+        var tokenHandler = new JwtSecurityTokenHandler
+        {
+            MapInboundClaims = false
+        };
+
+        var key = Encoding.UTF8.GetBytes(configuration["Jwt:Key"]!);
+
+        try
+        {
+            tokenHandler.ValidateToken(tokenDto.Token, new TokenValidationParameters
+            {
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey = new SymmetricSecurityKey(key),
+                ValidateIssuer = true,
+                ValidateAudience = true,
+                ValidIssuer = configuration["Jwt:Issuer"],
+                ValidAudience = configuration["Jwt:Audience"],
+                ValidateLifetime = true,
+                ClockSkew = TimeSpan.Zero,
+                RoleClaimType = ClaimTypes.Role,
+                NameClaimType = JwtRegisteredClaimNames.Sub
+            }, out var validatedToken);
+
+            return Ok(new TokenValidationResponse()
+            {
+                Valid = true
+            });
+        }
+        catch (SecurityTokenExpiredException)
+        {
+            return Unauthorized(new TokenValidationResponse { Valid = false, Error = "Token expired" });
+        }
+        catch (SecurityTokenException)
+        {
+            return Unauthorized(new TokenValidationResponse { Valid = false, Error = "Invalid token" });
+        }
+    }
+
     
     [HttpPost("refresh")]
-    public IActionResult Refresh(TokenResult tokenRequest)
+    public IActionResult Refresh([FromBody] RefreshTokenRequest tokenRequest)
     {
         var tokenHandler = new JwtSecurityTokenHandler
         {

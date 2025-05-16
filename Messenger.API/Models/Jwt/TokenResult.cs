@@ -1,4 +1,4 @@
-namespace Messenger.API.Models;
+namespace Messenger.API.Models.Jwt;
 
 public class TokenResult
 {
