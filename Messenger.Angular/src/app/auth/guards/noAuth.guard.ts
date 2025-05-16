@@ -1,15 +1,19 @@
 import { CanActivateFn, Router } from '@angular/router';
-import { AuthService } from '../../services/auth/auth.service';
 import { inject } from '@angular/core';
+import { AuthService } from '../../services/auth/auth.service';
+import { map } from 'rxjs/operators';
+import { Observable } from 'rxjs';
 
-export const noAuthGuard: CanActivateFn = () => {
+export const noAuthGuard: CanActivateFn = (): Observable<
+  boolean | import('@angular/router').UrlTree
+> => {
   const authService = inject(AuthService);
   const router = inject(Router);
 
-  if (!authService.isAuthenticated()) {
-    return true;
-  } else {
-    router.navigate(['/']);
-    return false;
-  }
+  return authService.validateTokenOnce().pipe(
+    map((isAuthenticated) => {
+      console.log('authGuard final check:', isAuthenticated);
+      return !isAuthenticated ? true : router.createUrlTree(['/']);
+    })
+  );
 };

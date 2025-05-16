@@ -8,17 +8,19 @@ import {
 import { ThemeService } from './services/theme.service';
 import { AuthService } from './services/auth/auth.service';
 import { NotificationsService } from './services/notifications.service';
+import { CommonModule } from '@angular/common';
+import { NavbarComponent } from './home/navbar/navbar.component';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, RouterModule],
+  imports: [RouterOutlet, RouterModule, CommonModule, NavbarComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css',
 })
 export class AppComponent {
   constructor(
     private themeService: ThemeService,
-    private authService: AuthService,
+    protected authService: AuthService,
     private notificationService: NotificationsService,
     private router: Router
   ) {
@@ -28,5 +30,6 @@ export class AppComponent {
       }
     });
   }
+
   title = 'Messenger.Angular';
 }
